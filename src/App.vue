@@ -6,7 +6,6 @@
 
 <script>
 import Navigation from './components/Navigation'
-
 export default {
   name: 'NavigationWidget',
   components: {
@@ -14,4 +13,3 @@ export default {
   }
 }
 </script>
-
