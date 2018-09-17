@@ -44,7 +44,7 @@ export default {
     }
   },
   created () {
-    axios.get(`http://localhost/dispenser/navigation/get/GlobalNav`)
+    axios.get(`http://localhost/dispenser/navigation/default`, {withCredentials: true})
       .then(response => {
         this.entrys = response.data
       })
