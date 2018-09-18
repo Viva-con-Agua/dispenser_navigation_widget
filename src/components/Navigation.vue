@@ -2,11 +2,11 @@
     <div class="navbar navbar-vca navbar-default navbar-fixed-top"> <!-- navbar-default -->
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/drops">
-						<img src="images/drop_small.png"/>
+          <a class="navbar-brand" href="/">
+						<img src="/dispenser/images/drop_small.png"/>
             <div>
               <span class="bold">Pool²</span>
-              <span>Vica con Agua</span>
+              <span>Viva con Agua</span>
             </div>
           </a>
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
@@ -40,17 +40,68 @@ export default {
   data () {
     return {
       entrys: [],
-      errors: []
+      errors: [],
+      location: window.location
     }
   },
-  created () {
-    axios.get(`http://localhost/dispenser/navigation/default`, {withCredentials: true})
+  beforeMount () {
+    axios
+      .get(`/webapps/identity`)
       .then(response => {
-        this.entrys = response.data
+        if (response.status === 200) {
+          axios
+            .get(`/dispenser/navigation/get/id`)
+            .then(response => {
+              this.entrys = response.data
+            })
+            .catch(e => {
+              this.errors.push(e)
+            })
+        }
       })
-      .catch(e => {
-        this.errors.push(e)
+      .catch(error => {
+        switch (error.response.status) {
+          case 401:
+            axios
+              .get(`/dispenser/navigation/get/default`)
+              .then(response => {
+                this.entrys = response.data
+              })
+              .catch(e => {
+                this.errors.push(e)
+              })
+        }
+      })
+  },
+  beforeUpdate () {
+    axios
+      .get(`/webapps/identity`)
+      .then(response => {
+        if (response.status === 200) {
+          axios
+            .get(`/dispenser/navigation/get/id`)
+            .then(response => {
+              this.entrys = response.data
+            })
+            .catch(e => {
+              this.errors.push(e)
+            })
+        }
+      })
+      .catch(error => {
+        switch (error.response.status) {
+          case 401:
+            axios
+              .get(`/dispenser/navigation/get/default`)
+              .then(response => {
+                this.entrys = response.data
+              })
+              .catch(e => {
+                this.errors.push(e)
+              })
+        }
       })
   }
+
 }
 </script>
