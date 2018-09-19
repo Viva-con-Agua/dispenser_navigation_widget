@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar navbar-vca navbar-default navbar-fixed-top"> <!-- navbar-default -->
+    <div class="navbar-vca navbar-fixed-top"> <!-- navbar-default -->
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
@@ -17,18 +17,25 @@
           </button>
         </div>
 			<div class="navbar-collapse collapse" id="navbar-main">
-	<ul class="nav navbar-nav navbar-right">
-		<li v-for="entry in entrys" :key="entry.id">
-			<a v-bind:href="entry.url">{{ entry.lable }}</a>
-		</li>
-	</ul>
-  <ul v-if="errors && errors.length">
-    <li v-for="error of errors" :key="error.id">
-      {{error.message}}
-    </li>
-  </ul>
- </div>
-      </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li v-for="entry in entrys" :key="entry.id">
+            <a v-bind:href="entry.url">{{ entry.lable }}
+            </a>
+            <ul class="nav-sub">
+              <li v-for="node in entry.entrys" :key="node.id">
+                <a v-bind:href="node.url">{{ node.lable}}</a>
+              </li>
+            </ul>
+
+          </li>
+        </ul>
+        <ul v-if="errors && errors.length">
+          <li v-for="error of errors" :key="error.id">
+            {{error.message}}
+         </li>
+      </ul>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -44,63 +51,51 @@ export default {
       location: window.location
     }
   },
-  beforeMount () {
-    axios
-      .get(`/webapps/identity`)
-      .then(response => {
-        if (response.status === 200) {
-          axios
-            .get(`/dispenser/navigation/get/id`)
-            .then(response => {
-              this.entrys = response.data
-            })
-            .catch(e => {
-              this.errors.push(e)
-            })
-        }
+  methods: {
+    addChild: function () {
+      this.entrys.entrys.push({
+        name: 'new stuff'
       })
-      .catch(error => {
-        switch (error.response.status) {
-          case 401:
+    },
+    getNavigation: function () {
+      axios
+        .get(`/webapps/identity`)
+        .then(response => {
+          if (response.status === 200) {
             axios
-              .get(`/dispenser/navigation/get/default`)
+              .get(`/dispenser/navigation/get/id`)
               .then(response => {
                 this.entrys = response.data
               })
               .catch(e => {
                 this.errors.push(e)
               })
-        }
-      })
+          }
+        })
+        .catch(error => {
+          switch (error.response.status) {
+            case 401:
+              axios
+                .get(`/dispenser/navigation/get/default`)
+                .then(response => {
+                  this.entrys = response.data
+                })
+                .catch(e => {
+                  this.errors.push(e)
+                })
+          }
+        })
+    }
   },
-  beforeUpdate () {
-    axios
-      .get(`/webapps/identity`)
-      .then(response => {
-        if (response.status === 200) {
-          axios
-            .get(`/dispenser/navigation/get/id`)
-            .then(response => {
-              this.entrys = response.data
-            })
-            .catch(e => {
-              this.errors.push(e)
-            })
-        }
-      })
-      .catch(error => {
-        switch (error.response.status) {
-          case 401:
-            axios
-              .get(`/dispenser/navigation/get/default`)
-              .then(response => {
-                this.entrys = response.data
-              })
-              .catch(e => {
-                this.errors.push(e)
-              })
-        }
-      })
+  mounted () {
+    this.getNavigation()
+  },
+  beforeUpdate: {
+    location: function (val) {
+      if (val) {
+        this.getNavigation()
+      }
+    }
   }
 
 }
