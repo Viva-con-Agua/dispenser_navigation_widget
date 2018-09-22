@@ -41,14 +41,13 @@
 
 <script>
 import axios from 'axios'
-
 export default {
   name: 'Navigation',
   data () {
     return {
       entrys: [],
       errors: [],
-      location: window.location
+      location: ''
     }
   },
   methods: {
@@ -87,16 +86,8 @@ export default {
         })
     }
   },
-  mounted () {
+  beforeCreate () {
     this.getNavigation()
-  },
-  beforeUpdate: {
-    location: function (val) {
-      if (val) {
-        this.getNavigation()
-      }
-    }
   }
-
 }
 </script>
