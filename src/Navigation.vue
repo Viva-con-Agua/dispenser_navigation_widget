@@ -86,7 +86,7 @@ export default {
         })
     }
   },
-  beforeCreate () {
+  created () {
     this.getNavigation()
   }
 }
