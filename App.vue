@@ -1,16 +1,16 @@
 <template>
   <div id="navigation-widget">
-    <Navigation/>
+    <WidgetTopNavigation/>
   </div>
 </template>
 
 <script>
-import Navigation from './components/Navigation'
+import WidgetTopNavigation from 'vca-widget-navigation'
 
 export default {
   name: 'NavigationWidget',
   components: {
-    Navigation
+    WidgetTopNavigation
   }
 }
 </script>
